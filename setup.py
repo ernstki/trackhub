@@ -34,4 +34,9 @@ setup(
     #scripts = ['trackhub/scripts/example_script.py'],
     author_email="dalerr@niddk.nih.gov",
     classifiers=['Development Status :: 4 - Beta'],
+    entry_points={
+        'console_scripts': [
+            'trackhub = trackhub.cli:cli',
+        ],
+    },
 )
