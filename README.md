@@ -47,7 +47,7 @@ on Linux, and
 majmin=$( python -V |& perl -pe 's/.* (\d+\.\d+)\.\d+/\1/' )
 
 # append *that* Python's 'bin' directory to your PATH
-echo -e "\nexport PATH=$HOME/Library/Frameworks/Python/$majmin/bin:$PATH" \
+echo -e "\nexport PATH=$HOME/Library/Python/$majmin/bin:$PATH" \
     >> ~/.bashrc
 ```
 
