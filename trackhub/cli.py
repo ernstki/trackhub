@@ -11,6 +11,8 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s [%(name)s:%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
 
+ISSUES_URL = 'https://tf.cchmc.org/s/dvakj'
+
 DEFAULTS = {
     'build': 'hg19',
 }
@@ -38,13 +40,7 @@ def get_chrome_sizes(build):
     if os.path.isfile(chrsize) and os.stat(chrsize).st_size > 0:
         return chrsize
     else:
-        return None
-
-
-# click.secho("OOPS!", color='red', err=True)
-# click.echo("Missing required file {}".format(chrsize), err=True)
-# click.echo("Please run 'fetch_chrome_sizes.sh' inside {}"
-#            .format(DATADIR), err=True)
+        raise RuntimeError("Missing required file {}".format(chrsize))
 
 
 def converter(infile, build=DEFAULTS['build']):
@@ -86,7 +82,9 @@ def converter(infile, build=DEFAULTS['build']):
     logger.info("Completed conversion for '{}'".format(basename))
 
 
-@click.group(context_settings=dict(help_option_names=['-h', '--help']))
+@click.group(context_settings=dict(help_option_names=['-h', '--help']),
+             epilog="A Weirauch Lab Production | Issues? -> {}"
+                    .format(ISSUES_URL))
 @click.option('-b', '--build', type=str,
               help="Specify the UCSC build (default: hg19).",
               metavar='<BUILD>', default=DEFAULTS['build'], )
@@ -112,13 +110,14 @@ def convert(ctx):
     """Convert files into GB track hub-appropriate formats."""
     files = glob.glob(os.path.join(os.getcwd(), '*'))
 
+    # FIXME: '--build' option is being ignored here; use functools.partial?
     with Pool(4) as p:
         p.map(converter, files)
 
 
 @cli.command()
 @click.pass_context
-def gen(ctx):
+def generate(ctx):
     """Generate GB track hub for discovered files in c.w.d."""
     click.echo("Generating... (not really)")
 
