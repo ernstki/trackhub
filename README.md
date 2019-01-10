@@ -15,7 +15,25 @@ With Python (2.7 or 3.x) using [pip]:
 pip install --user https://github.com/ernstki/trackhub/archive/add-click-cli.zip
 ```
 
-Then make sure `~/.local/bin` is in your path, else
+Some data files need to be obtained from UCSC in order for the conversion to
+bigBed and bigWig to work properly (more information [here][bigbed]):
+
+```bash
+# replace with 'python3' if using Python 3.x
+datadir=$( python -c '
+import pkg_resources
+print(pkg_resources.resource_filename("trackhub", "data"))
+' )
+
+mkdir -p $datadir && pushd $datadir
+
+# log in to the HTTP proxy first, if required on your network
+./fetch_chrom_sizes.sh
+```
+
+_This process is, sadly, not yet automatic; see #4 in the issue tracker._
+
+Finally make sure `~/.local/bin` is in your path, else
 
 ```bash
 echo -e "\nexport PATH=$HOME/.local/bin:$PATH" >> ~/.bashrc
@@ -70,6 +88,7 @@ MIT. See [`LICENSE.txt`](LICENSE.txt).
  
 
 [pip]: https://pip.pypa.io/en/stable/installing/
+[bigbed]: http://genome.ucsc.edu/goldenPath/help/bigBed.html
 [gb]: https://genome.ucsc.edu/cgi-bin/hgTracks
 [click]: http://click.palletsprojects.com
 [trackhub]: https://github.com/daler/trackhub
